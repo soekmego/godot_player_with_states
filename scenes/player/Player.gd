@@ -9,6 +9,7 @@ var extraJumps := 0
 var maxExtraJumps := 1
 var colddownTimer := 0
 var knockbackTimer := 0
+var damageNumberPopup = preload("res://scenes/enemy/DamageNumber.tscn")
 
 #bools
 var jumping := false
@@ -124,6 +125,11 @@ func handleCrouch(delta):
 
 func doDamagePlayer(attackDamage : int = 1, attackForce : int = 10):
 	print(attackDamage)
+	var dmgPopUp = damageNumberPopup.instance()
+	self.add_child(dmgPopUp)
+	dmgPopUp.setNumber(attackDamage)
+	dmgPopUp.setDirection(direction)
+	
 	knockbackTimer = attackForce
 	state = STATE.KNOCKBACK
 

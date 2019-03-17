@@ -279,9 +279,11 @@ anims/Run = SubResource( 7 )
 script = ExtResource( 7 )
 
 [node name="HeroCenterPos" type="Position2D" parent="."]
+editor/display_folded = true
 position = Vector2( 0, 5.00521 )
 
 [node name="CameraPos" type="Position2D" parent="HeroCenterPos"]
+editor/display_folded = true
 position = Vector2( 65, 0 )
 
 [node name="Camera2D" type="Camera2D" parent="HeroCenterPos/CameraPos"]
