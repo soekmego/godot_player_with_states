@@ -133,7 +133,7 @@ func doKnockBack():
 		anim.play("Damage")
 		knockbackTimer -= 1
 		motion.y = - 20 * knockbackTimer
-		motion.x = (20) * (direction - 1) * knockbackTimer
+		motion.x = (30) * (direction * -1) * knockbackTimer
 	else:
 		knockbackTimer = 0
 		state = STATE.DEFAULT
