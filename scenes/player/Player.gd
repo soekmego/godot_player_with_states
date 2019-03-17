@@ -8,11 +8,13 @@ var jumpHeld := 0
 var extraJumps := 0
 var maxExtraJumps := 1
 var colddownTimer := 0
+var knockbackTimer := 0
 
 #bools
 var jumping := false
 
 #constants
+const TYPE = "Player"
 const MOVE_SPEED = 100
 const JUMP_SPEED = 100
 const GRAVITY = 400
@@ -20,6 +22,7 @@ const MAX_JUMP_HELD = 10
 
 #state machine options
 enum STATE {DEFAULT, CROUCH, KNOCKBACK}
+
 
 #onready var
 onready var inputHelper = $inputHelper
@@ -119,11 +122,20 @@ func handleCrouch(delta):
 		motion.y = 0
 		anim.play("JumpDown")
 
-func receiveDamage():
-	pass #receive damage in this function then change the state to KNOCKBACK
+func doDamagePlayer(attackDamage : int = 1, attackForce : int = 10):
+	print(attackDamage)
+	knockbackTimer = attackForce
+	state = STATE.KNOCKBACK
 
 func doKnockBack():
-	pass #cause the effect of the knockback and change the state to DEFAULT
+	if knockbackTimer > 0:
+		anim.play("Damage")
+		knockbackTimer -= 1
+		motion.y = - 20 * knockbackTimer
+		motion.x = (20) * (direction * -1) * knockbackTimer
+	else:
+		knockbackTimer = 0
+		state = STATE.DEFAULT
 
 func handleGravity(delta):
 	if is_on_floor():
