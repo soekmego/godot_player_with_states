@@ -9,7 +9,7 @@ var extraJumps := 0
 var maxExtraJumps := 1
 var colddownTimer := 0
 var knockbackTimer := 0
-var damageNumberPopup = preload("res://scenes/enemy/DamageNumber.tscn")
+var damageNumberPopup = preload("res://scenes/player/DamageNumber.tscn")
 
 #bools
 var jumping := false
@@ -124,12 +124,7 @@ func handleCrouch(delta):
 		anim.play("JumpDown")
 
 func doDamagePlayer(attackDamage : int = 1, attackForce : int = 10):
-	print(attackDamage)
-	var dmgPopUp = damageNumberPopup.instance()
-	self.add_child(dmgPopUp)
-	dmgPopUp.setNumber(attackDamage)
-	dmgPopUp.setDirection(direction)
-	
+	showDamageNumber(attackDamage)
 	knockbackTimer = attackForce
 	state = STATE.KNOCKBACK
 
@@ -138,10 +133,16 @@ func doKnockBack():
 		anim.play("Damage")
 		knockbackTimer -= 1
 		motion.y = - 20 * knockbackTimer
-		motion.x = (20) * (direction * -1) * knockbackTimer
+		motion.x = (20) * (direction - 1) * knockbackTimer
 	else:
 		knockbackTimer = 0
 		state = STATE.DEFAULT
+
+func showDamageNumber(dmgNumber : int):
+	var dmgPopUp = damageNumberPopup.instance()
+	dmgPopUp.setNumber(dmgNumber)
+	dmgPopUp.set_position(get_node("HeroCenterPos").get_global_position())
+	get_parent().add_child(dmgPopUp)
 
 func handleGravity(delta):
 	if is_on_floor():
