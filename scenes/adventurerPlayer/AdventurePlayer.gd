@@ -13,7 +13,7 @@ var damageNumberPopup = preload("res://scenes/player/DamageNumber.tscn")
 
 #bools
 var jumping := false
-var isJumpPrepareEnded := false
+var canExtraJump := false
 
 #constants
 const TYPE = "Player"
@@ -79,9 +79,15 @@ func handleJumpInput(delta):
 	
 	elif jumping && !is_on_floor():
 		heldJump(delta)
-
+	
+	if canExtraJump:
+		if inputHelper.isJumpPressed() && extraJumps > 0:
+			extraJumps -= 1
+			initialJump(2)
+	
 	if inputHelper.isJumpRelease():
 		jumpHeld = MAX_JUMP_HELD
+		canExtraJump = true
 		jumping = false
 
 
@@ -91,6 +97,7 @@ func initialJump(extraJumpPower : int = 1):
 
 func heldJump(delta):
 	if 0 < jumpHeld:
+		canExtraJump = false
 		jumpHeld -= 1 
 		motion.y -= JUMP_SPEED / 10
 
@@ -150,6 +157,7 @@ func handleGravity(delta):
 
 func resetJump():
 	extraJumps = maxExtraJumps
+	canExtraJump = false
 
 func reduceTimers():
 	if 0 < colddownTimer:
