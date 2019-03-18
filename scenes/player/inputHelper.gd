@@ -34,3 +34,8 @@ func isJumpRelease()->bool:
 	if Input.is_action_just_released("ui_accept"):
 		return true
 	else: return false
+
+func isAttackJustPressed()->bool:
+	if Input.is_action_just_pressed("ui_select"):
+		return true
+	else: return false

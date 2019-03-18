@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platformer_with_state", "Platformer_with_state.csproj", "{29657BEB-0C0C-40F7-81EA-24329DA118DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	Release|Any CPU = Release|Any CPU
+	Tools|Any CPU = Tools|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29657BEB-0C0C-40F7-81EA-24329DA118DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29657BEB-0C0C-40F7-81EA-24329DA118DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29657BEB-0C0C-40F7-81EA-24329DA118DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29657BEB-0C0C-40F7-81EA-24329DA118DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29657BEB-0C0C-40F7-81EA-24329DA118DF}.Tools|Any CPU.ActiveCfg = Tools|Any CPU
+		{29657BEB-0C0C-40F7-81EA-24329DA118DF}.Tools|Any CPU.Build.0 = Tools|Any CPU
+	EndGlobalSection
+EndGlobal
