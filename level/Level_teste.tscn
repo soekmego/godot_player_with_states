@@ -1,7 +1,52 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://tilemap/DungeonTilemap.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/adventurerPlayer/AdventurePlayer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/adventurerPlayer/HealthManager.gd" type="Script" id=3]
+[ext_resource path="res://sprites/player/player-idle.png" type="Texture" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 10, 11 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "Idle"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 4, 4, 4, 4 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 2 ]
+}
 
 [node name="Node2D" type="Node2D"]
 
@@ -32,4 +77,40 @@ tile_data = PoolIntArray( -655386, 1, 0, -655385, 1, 0, -655384, 1, 0, -655383, 
 position = Vector2( -298, -1 )
 
 [node name="Enemy" type="KinematicBody2D" parent="."]
+position = Vector2( -157, 0 )
 
+[node name="HealthManager" type="Node" parent="Enemy"]
+script = ExtResource( 3 )
+
+[node name="inputManager" type="Node" parent="Enemy"]
+
+[node name="StateMachine" type="Node" parent="Enemy"]
+editor/display_folded = true
+
+[node name="idle" type="Node" parent="Enemy/StateMachine"]
+
+[node name="attack" type="Node" parent="Enemy/StateMachine"]
+
+[node name="move" type="Node" parent="Enemy/StateMachine"]
+
+[node name="jump" type="Node" parent="Enemy/StateMachine"]
+
+[node name="hurt" type="Node" parent="Enemy/StateMachine"]
+
+[node name="Contact" type="CollisionShape2D" parent="Enemy"]
+position = Vector2( -1, 5 )
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="Enemy"]
+position = Vector2( 7, 8 )
+texture = ExtResource( 4 )
+offset = Vector2( -7, -8 )
+hframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy"]
+anims/Idle = SubResource( 2 )
+
+[node name="Node" type="Node" parent="Enemy"]
+
+
+[editable path="AdventurePlayer"]
