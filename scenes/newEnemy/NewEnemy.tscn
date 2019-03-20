@@ -220,6 +220,7 @@ tracks/2/keys = {
 }
 
 [node name="Enemy" type="KinematicBody2D"]
+collision_layer = 4
 script = ExtResource( 1 )
 enemyDeath = ExtResource( 2 )
 damageNumber = ExtResource( 3 )
@@ -241,6 +242,7 @@ position = Vector2( -2, -3 )
 shape = SubResource( 9 )
 
 [node name="MoveAreaTarget" type="Area2D" parent="StateMachine"]
+editor/display_folded = true
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StateMachine/MoveAreaTarget"]

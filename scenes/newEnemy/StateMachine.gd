@@ -3,7 +3,12 @@ extends Node
 #variables
 var state = STATE.IDLE
 var newActionTimer = 10
+var stunTime = 0
 var target
+var lastState
+
+#bools
+var jumping = false
 
 #onready variables
 onready var enemy = get_parent()
@@ -12,6 +17,7 @@ onready var enemy = get_parent()
 enum STATE {
 	IDLE, 
 	MOVE,
+	STUN,
 	ATTACK
 	}
 
@@ -30,10 +36,24 @@ func stateMachine (delta):
 	
 	elif state == STATE.ATTACK:
 		state = STATE.MOVE
-		pass
+	
+	elif state == STATE.STUN:
+		if stunTime > 0:
+			enemy.anim.play("Hurt")
+			enemy.motion.x += 30
+			stunTime -= 1
+		else:
+			state = lastState
 
 func HandleGravity(delta):
-	enemy.motion.y += enemy.GRAVITY * delta
+	if enemy.is_on_floor():
+		jumping = false
+		return
+	
+	if enemy.motion.y < 0:
+		enemy.motion.y += enemy.GRAVITY * delta
+	else:
+		enemy.motion.y += (enemy.GRAVITY * delta ) * 2
 
 func HandleMoviment():
 	if newActionTimer > 0:
@@ -45,6 +65,7 @@ func HandleMoviment():
 	var g_targetPos = target.get_global_position()
 	var g_enemyPos = enemy.get_global_position()
 	var sideValue = g_enemyPos.x - g_targetPos.x
+	var hightValue = g_enemyPos.y - g_targetPos.y
 	newActionTimer = 10
 	
 	if sideValue > 0:
@@ -53,9 +74,18 @@ func HandleMoviment():
 	else:
 		enemy.setDirection(1)
 		enemy.motion.x = enemy.SPEED
-		
+	
+	if hightValue > 20 && !jumping:
+		jumping = true
+		enemy.motion.y = -enemy.JUMP_POWER
+	
 	if abs(sideValue) > $MoveAreaTarget/CollisionShape2D.shape.get_radius():
 		state = STATE.IDLE
+
+func receiveDamage(stunLock : int):
+	lastState = state
+	stunTime = stunLock
+	state = STATE.STUN
 
 func _on_MoveAreaTarget_body_entered(body):
 	if body.get("TYPE") == "Player":

@@ -33,9 +33,6 @@ tile_data = PoolIntArray( -655386, 1, 0, -655385, 1, 0, -655384, 1, 0, -655383, 
 editor/display_folded = true
 position = Vector2( -298, -1 )
 
-[node name="SwordAreaHit" parent="AdventurePlayer" index="6"]
-editor/display_folded = true
-
 [node name="Enemy" parent="." instance=ExtResource( 3 )]
 editor/display_folded = true
 

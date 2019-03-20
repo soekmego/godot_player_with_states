@@ -8,6 +8,7 @@ var direction = 1
 const TYPE := "Enemy"
 const SPEED := 50
 const GRAVITY := 400
+const JUMP_POWER := 350
 
 #exported variable
 export (PackedScene) var enemyDeath
@@ -44,6 +45,7 @@ func Die():
 
 func _on_HealthManager_healthChanged(health, maxHealth, damage):
 	ShowDamage(damage)
+	$StateMachine.receiveDamage(10)
 	
 	if health == 0:
 		Die()
