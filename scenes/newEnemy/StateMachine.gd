@@ -80,6 +80,8 @@ func HandleGravity(delta):
 func HandleMoviment():
 	if 0 > newActionTimer && target != null:
 		enemy.motion.x = enemy.SPEED * enemy.direction
+	else:
+		StateManager(STATE.IDLE)
 
 func receiveDamage(stunLock : int):
 	lastState = state
@@ -95,13 +97,13 @@ func setAreaDamage(value : bool):
 
 func _on_MoveAreaTarget_body_entered(body):
 	if body.get("TYPE") == "Player":
-		StateManager(STATE.MOVE)
 		target = body
+		StateManager(STATE.MOVE)
 
 func _on_MoveAreaTarget_body_exited(body):
 	if body.get("TYPE") == "Player":
-		StateManager(STATE.IDLE)
 		target = null
+		StateManager(STATE.IDLE)
 
 func _on_AttackArea_body_entered(body):
 	if body.get("TYPE") == "Player":
@@ -118,4 +120,4 @@ func _on_HitArea_body_entered(body):
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "Attack":
 		ResetAttacks()
-		StateManager(STATE.IDLE)
+		StateManager(STATE.MOVE)
