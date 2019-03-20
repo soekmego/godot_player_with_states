@@ -5,12 +5,12 @@ var state = STATE.IDLE
 var newActionTimer := 10
 var stunTime := 0
 var target
+var targetDirection := 1
 var lastState
 var attackColdown : int
 
 #bools
 var jumping = false
-var attacking = false
 
 #onready variables
 onready var enemy = get_parent()
@@ -22,9 +22,6 @@ enum STATE {
 	STUN,
 	ATTACK
 	}
-
-func _process(delta):
-	enemy.VerifyDirection(target)
 
 func stateMachine (delta):
 	newActionTimer -= 1
@@ -42,30 +39,18 @@ func stateMachine (delta):
 		ResetAttacks()
 
 	elif state == STATE.ATTACK:
-		enemy.anim.play("Attack")
-		MakeAttack()
+		$DashAttack.enter(enemy, target)
 	
 	elif state == STATE.STUN:
-		ResetAttacks()
-		
 		if stunTime > 0:
 			enemy.anim.play("Hurt")
-			enemy.motion.x += 10
+			enemy.motion.x += 30
 			stunTime -= 1
 		else:
 			state = lastState
 
-func StateManager(newState):
-	if state != newState && !attacking:
-		state = newState
-
-func MakeAttack():
-	attacking = true
-	enemy.motion.x = 0
-
 func ResetAttacks():
-	setAreaDamage(false)
-	attacking = false
+	$DashAttack.stage = 0
 
 func HandleGravity(delta):
 	if enemy.is_on_floor():
@@ -78,44 +63,46 @@ func HandleGravity(delta):
 		enemy.motion.y += (enemy.GRAVITY * delta ) * 2
 
 func HandleMoviment():
-	if 0 > newActionTimer && target != null:
-		enemy.motion.x = enemy.SPEED * enemy.direction
+	if newActionTimer > 0:
+		return
+	
+	if target == null:
+		return
+		
+	var g_targetPos = target.get_global_position()
+	var g_enemyPos = enemy.get_global_position()
+	var sideValue = g_enemyPos.x - g_targetPos.x
+	var hightValue = g_enemyPos.y - g_targetPos.y
+	newActionTimer = 10
+	
+	if sideValue > 0:
+		enemy.motion.x = -enemy.SPEED
+		targetDirection = -1
+		enemy.setDirection(-1)
+	else:
+		enemy.setDirection(1)
+		targetDirection = 1
+		enemy.motion.x = enemy.SPEED
+	
+	if hightValue > 20 && !jumping:
+		jumping = true
+		enemy.motion.y = -enemy.JUMP_POWER
 
 func receiveDamage(stunLock : int):
 	lastState = state
 	stunTime = stunLock
-	StateManager(STATE.STUN)
-
-func setAreaDamage(value : bool):
-	enemy.get_node("HitArea/HitShape").set_disabled(!value)
-
-#
-# Signals
-#
+	state = STATE.STUN
 
 func _on_MoveAreaTarget_body_entered(body):
 	if body.get("TYPE") == "Player":
-		StateManager(STATE.MOVE)
+		state = STATE.MOVE
 		target = body
 
 func _on_MoveAreaTarget_body_exited(body):
 	if body.get("TYPE") == "Player":
-		StateManager(STATE.IDLE)
+		state = STATE.IDLE
 		target = null
 
 func _on_AttackArea_body_entered(body):
 	if body.get("TYPE") == "Player":
-		StateManager(STATE.ATTACK)
-
-func _on_AttackArea_body_exited(body):
-	if body.get("TYPE") == "Player":
-		StateManager(STATE.MOVE)
-
-func _on_HitArea_body_entered(body):
-	if body.get("TYPE") == "Player":
-		body.HealthManager.doDamage(enemy.DAMAGE)
-
-func _on_AnimationPlayer_animation_finished(anim_name):
-	if anim_name == "Attack":
-		ResetAttacks()
-		StateManager(STATE.IDLE)
+		state = STATE.ATTACK

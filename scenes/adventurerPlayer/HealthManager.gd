@@ -1,19 +1,19 @@
 extends Node
 
-signal healthChanged(health, maxHealth, damage)
+signal healthChanged(health, maxHealth, damage, heal)
 
 export (int) var maxHealth : int = 5
 export (int) var health : int
 
 func _ready():
-	health = maxHealth
+	healDamage(maxHealth)
 
 func doDamage (damage : int):
 	health -= damage
 	health = int(max(0, health))
-	emit_signal("healthChanged", health, maxHealth, damage)
+	emit_signal("healthChanged", health, maxHealth, damage, null)
 
-func healDamage (damage : int):
-	health += damage
+func healDamage (heal : int):
+	health += heal
 	health = int(min(health, maxHealth))
-	emit_signal("healthChanged", health, maxHealth, damage)
+	emit_signal("healthChanged", health, maxHealth, null, heal)

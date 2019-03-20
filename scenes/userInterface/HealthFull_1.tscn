@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://sprites/lifebar/pearl_01c.png" type="Texture" id=1]
+
+[node name="HealthFull" type="TextureRect"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+texture = ExtResource( 1 )
+

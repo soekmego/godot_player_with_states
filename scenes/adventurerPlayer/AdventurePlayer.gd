@@ -6,7 +6,7 @@ var motion := Vector2()
 var direction := 1
 var jumpHeld := 0.0
 var extraJumps := 0
-var maxExtraJumps := 2
+var maxExtraJumps := 1
 var colddownTimer := 0
 var knockbackTimer := 0
 var damageNumberPopup = preload("res://scenes/player/DamageNumber.tscn")
@@ -16,14 +16,15 @@ var damage := 0
 #bools
 var jumping := false
 var canExtraJump := false
-var attackQueued = false
-var readyToAttack = true
+var attackQueued := false
+var readyToAttack := true
+var immuneDamage := false
 
 #constants
 const TYPE = "Player"
-const MOVE_SPEED := 100.0
-const JUMP_SPEED := 100.0
-const GRAVITY := 400.0
+const MOVE_SPEED := 130.0
+const JUMP_SPEED := 150.0
+const GRAVITY := 700.0
 const MAX_JUMP_HELD := 10.0
 
 #state machine options
@@ -38,6 +39,7 @@ enum STATE {
 #onready var
 onready var inputHelper = $inputHelper
 onready var anim = $AnimationPlayer
+onready var HealthManager = $HealthManager
 
 func _ready():
 	setCollisionMaskAttack(false)
@@ -172,19 +174,16 @@ func resetAttackBools():
 	attackQueued = false
 	readyToAttack = false
 
-func doDamagePlayer(attackDamage : int = 1, attackForce : int = 10):
-	showDamageNumber(attackDamage)
-	knockbackTimer = attackForce
-	state = STATE.KNOCKBACK
-
 func doKnockBack():
 	if knockbackTimer > 0:
 		anim.play("Hurt")
+		immuneDamage = true
 		knockbackTimer -= 1
 		motion.y = - 20 * knockbackTimer
 		motion.x = (30) * (direction * -1) * knockbackTimer
 	else:
 		knockbackTimer = 0
+		immuneDamage = false
 		state = STATE.DEFAULT
 
 func showDamageNumber(dmgNumber : int):
@@ -224,6 +223,10 @@ func setDirection(newDirection : int):
 func setCollisionMaskAttack(setValue : bool):
 	$SwordAreaHit/CollisionShape2D.set_disabled(!setValue)
 
+#
+# SIGNALS
+#
+
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "SwordAttack_1" || anim_name == "SwordAttack_2" || anim_name == "SwordAttack_3":
 		readyToAttack = true
@@ -231,4 +234,11 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 
 func _on_SwordAreaHit_body_entered(hitEnemy):
 	if hitEnemy.get("TYPE") == "Enemy":
-		hitEnemy.get_node("HealthManager").doDamage(damage)
+		hitEnemy.HealthManager.doDamage(damage)
+
+func _on_HealthManager_healthChanged(health, maxHealth, damage, heal):
+	if damage != null:
+		showDamageNumber(damage)
+		immuneDamage = true
+		knockbackTimer = 5
+		state = STATE.KNOCKBACK
