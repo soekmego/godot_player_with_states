@@ -1,0 +1,271 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://scenes/newEnemy/NewEnemy.gd" type="Script" id=1]
+[ext_resource path="res://scenes/newEnemy/EnemyExplosion.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/player/DamageNumber.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/adventurerPlayer/HealthManager.gd" type="Script" id=4]
+[ext_resource path="res://scenes/newEnemy/StateMachine.gd" type="Script" id=5]
+[ext_resource path="res://sprites/player/player-idle.png" type="Texture" id=6]
+[ext_resource path="res://sprites/player/player-hurt.png" type="Texture" id=7]
+[ext_resource path="res://sprites/player/player-jump.png" type="Texture" id=8]
+[ext_resource path="res://sprites/player/payer-run.png" type="Texture" id=9]
+
+[sub_resource type="CircleShape2D" id=9]
+radius = 62.0
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 150.0
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 10, 11 )
+
+[sub_resource type="Animation" id=5]
+resource_name = "Hurt"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 7 ), ExtResource( 7 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 2, 2 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "Idle"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 4, 4, 4, 4 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 2 ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "JumpDown"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ ExtResource( 8 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 2 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 1 ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "JumpUp"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ ExtResource( 8 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 2 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "Run"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 6, 6, 6, 6, 6, 6 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5 ]
+}
+
+[node name="Enemy" type="KinematicBody2D"]
+script = ExtResource( 1 )
+enemyDeath = ExtResource( 2 )
+damageNumber = ExtResource( 3 )
+
+[node name="HealthManager" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="inputManager" type="Node" parent="."]
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="AttackArea" type="Area2D" parent="StateMachine"]
+editor/display_folded = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StateMachine/AttackArea"]
+position = Vector2( -2, -3 )
+shape = SubResource( 9 )
+
+[node name="MoveAreaTarget" type="Area2D" parent="StateMachine"]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StateMachine/MoveAreaTarget"]
+position = Vector2( -1, -2 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -2, -3 )
+shape = SubResource( 8 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 7, 0 )
+texture = ExtResource( 6 )
+offset = Vector2( -7, -8 )
+hframes = 4
+frame = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Hurt = SubResource( 5 )
+anims/Idle = SubResource( 2 )
+anims/JumpDown = SubResource( 6 )
+anims/JumpUp = SubResource( 7 )
+anims/Run = SubResource( 4 )
+
+[connection signal="healthChanged" from="HealthManager" to="." method="_on_HealthManager_healthChanged"]
+[connection signal="body_entered" from="StateMachine/AttackArea" to="StateMachine" method="_on_AttackArea_body_entered"]
+[connection signal="body_entered" from="StateMachine/MoveAreaTarget" to="StateMachine" method="_on_MoveAreaTarget_body_entered"]
+[connection signal="body_exited" from="StateMachine/MoveAreaTarget" to="StateMachine" method="_on_MoveAreaTarget_body_exited"]

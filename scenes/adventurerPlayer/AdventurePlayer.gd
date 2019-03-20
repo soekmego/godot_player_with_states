@@ -10,7 +10,8 @@ var maxExtraJumps := 2
 var colddownTimer := 0
 var knockbackTimer := 0
 var damageNumberPopup = preload("res://scenes/player/DamageNumber.tscn")
-var attackTimer := 0
+var swordDamage := 1
+var damage := 0
 
 #bools
 var jumping := false
@@ -38,6 +39,9 @@ enum STATE {
 onready var inputHelper = $inputHelper
 onready var anim = $AnimationPlayer
 
+func _ready():
+	setCollisionMaskAttack(false)
+
 func _physics_process(delta):
 	StateMachine(delta)
 	reduceTimers()
@@ -52,12 +56,15 @@ func StateMachine(delta):
 		doKnockBack()
 	elif (state == STATE.SWORD_ATTACK_1):
 		handleAttackInput()
+		damage = swordDamage
 		anim.play("SwordAttack_1")
 	elif (state == STATE.SWORD_ATTACK_2):
 		handleAttackInput()
+		damage = swordDamage + 1
 		anim.play("SwordAttack_2")
 	elif (state == STATE.SWORD_ATTACK_3):
 		handleAttackInput()
+		damage = swordDamage + 2
 		anim.play("SwordAttack_3")
 
 func handleDefaultAnim():
@@ -122,6 +129,7 @@ func handleAttackInput():
 		
 		if state == STATE.DEFAULT:
 			resetAttackBools()
+			setCollisionMaskAttack(true)
 			state = STATE.SWORD_ATTACK_1
 			return
 		
@@ -129,6 +137,7 @@ func handleAttackInput():
 			if readyToAttack:
 				state = STATE.SWORD_ATTACK_2
 				resetAttackBools()
+				setCollisionMaskAttack(true)
 				return
 			else:
 				attackQueued = true
@@ -138,6 +147,7 @@ func handleAttackInput():
 			if readyToAttack:
 				state = STATE.SWORD_ATTACK_3
 				resetAttackBools()
+				setCollisionMaskAttack(true)
 				return
 			else: 
 				attackQueued = true
@@ -150,12 +160,15 @@ func handleAttackInput():
 		if (state == STATE.SWORD_ATTACK_1):
 			state = STATE.SWORD_ATTACK_2
 			resetAttackBools()
+			setCollisionMaskAttack(true)
 	
 		elif (state == STATE.SWORD_ATTACK_2):
 			state = STATE.SWORD_ATTACK_3
 			resetAttackBools()
+			setCollisionMaskAttack(true)
 
 func resetAttackBools():
+	setCollisionMaskAttack(false)
 	attackQueued = false
 	readyToAttack = false
 
@@ -208,6 +221,14 @@ func setDirection(newDirection : int):
 		set_global_transform(Transform2D(Vector2(direction,0),Vector2(0,1),Vector2(position.x,position.y)))
 		"""
 
+func setCollisionMaskAttack(setValue : bool):
+	$SwordAreaHit/CollisionShape2D.set_disabled(!setValue)
+
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "SwordAttack_1" || anim_name == "SwordAttack_2" || anim_name == "SwordAttack_3":
 		readyToAttack = true
+		setCollisionMaskAttack(false)
+
+func _on_SwordAreaHit_body_entered(hitEnemy):
+	if hitEnemy.get("TYPE") == "Enemy":
+		hitEnemy.get_node("HealthManager").doDamage(damage)

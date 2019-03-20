@@ -303,10 +303,10 @@ shape = SubResource( 10 )
 script = ExtResource( 47 )
 
 [node name="SwordAreaHit" type="Area2D" parent="."]
-editor/display_folded = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SwordAreaHit"]
 position = Vector2( -4, -9 )
 shape = SubResource( 11 )
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
+[connection signal="body_entered" from="SwordAreaHit" to="." method="_on_SwordAreaHit_body_entered"]

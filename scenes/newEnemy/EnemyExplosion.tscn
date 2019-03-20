@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://sprites/explosion/explosion-6.png" type="Texture" id=1]
+[ext_resource path="res://scenes/newEnemy/EnemyExplosion.gd" type="Script" id=2]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Explosion"
+length = 0.75
+step = 0.15
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 3, 4, 5, 6, 7 ]
+}
+
+[node name="Sprite" type="Sprite"]
+texture = ExtResource( 1 )
+hframes = 8
+frame = 3
+script = ExtResource( 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Explosion = SubResource( 1 )
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
